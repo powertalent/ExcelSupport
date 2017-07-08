@@ -6,7 +6,39 @@ Function MoveToLastSheet()
     ActiveWorkbook.Sheets(ActiveWorkbook.Sheets.Count).Select
 End Function
 
+Sub Translate()
+    SelectedValue = ActiveCell.Value
+    If (SelectedValue = "") Then
+        ThisWorkbook.Sheets(1).Range("A1").Value = GetClipBoardText()
+    Else
+        ThisWorkbook.Sheets(1).Range("A1").Value = ActiveCell.Value
+    End If
+        
+    Pronunciation = ThisWorkbook.Sheets(1).Range("C1")
+    Meaning = ThisWorkbook.Sheets(1).Range("B1")
+    MsgBox (Pronunciation & vbNewLine & Meaning)
+End Sub
+
+Function GetClipBoardText() As String
+   ' Microsoft Form 2.0 (FM2.0.dll)
+   Dim DataObj As MSForms.DataObject
+   Set DataObj = New MSForms.DataObject '<~~ Amended as per jp's suggestion
+
+   On Error GoTo Whoa
+
+   '~~> Get data from the clipboard.
+   DataObj.GetFromClipboard
+
+   '~~> Get clipboard contents
+   myString = DataObj.GetText(1)
+   GetClipBoardText = myString
+   Exit Function
+Whoa:
+   GetClipBoardText = ""
+End Function
+
 Sub auto_open()
     Application.OnKey "^%{PGUP}", "MoveToFirstSheet"
     Application.OnKey "^%{PGDN}", "MoveToLastSheet"
+    Application.OnKey "^q", "Translate"
 End Sub
