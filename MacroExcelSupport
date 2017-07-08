@@ -1,0 +1,12 @@
+Function MoveToFirstSheet()
+    ActiveWorkbook.Sheets(1).Select
+End Function
+
+Function MoveToLastSheet()
+    ActiveWorkbook.Sheets(ActiveWorkbook.Sheets.Count).Select
+End Function
+
+Sub auto_open()
+    Application.OnKey "^%{PGUP}", "MoveToFirstSheet"
+    Application.OnKey "^%{PGDN}", "MoveToLastSheet"
+End Sub
