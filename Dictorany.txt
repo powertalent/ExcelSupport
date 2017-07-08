@@ -1,0 +1,40 @@
+﻿検索	ケンサク	Kensaku	Search
+選択	センタク	sentaku 	Select
+実行	ジッコウ	jikkō	Execute
+イベント	イベント	Ibento 	Event
+ファイル	ファイル	fairu 	File
+ボタン	ボタン	botan 	Button
+テキスト	テキスト	tekisuto 	Text
+リンク	リンク	rinku 	Link
+チェック	チェック	chekku 	Check
+ラジオ	ラジオ	rajio 	Radio
+タイトル	タイトル	taitoru 	Title
+サンプル	サンプル	sanpuru 	sample
+サービス	サービス	sābisu 	service
+マスタ	マスタ	masuta 	Master
+検索	ケンサク	kensaku 	Search
+取引先	トリヒキサキ	torihiki saki 	Suppliers
+業務	ギョウム	gyoumu 	business
+概要	ガイヨウ	gaiyou 	Overview
+値変更	アタイヘンコウ	ne henkou 	Change Value
+表示	ヒョウジ	hyouji 	Display
+登録	トウロク	touroku 	Registration
+確認	カクニン	kakunin 	Confirmation
+請求	セイキュウ	seikyuu 	Claim
+半角	ハンカク	hankaku 	Half size
+全角	ゼンカク	zenkaku 	Full-width
+数字	スウジ	suuji 	A number
+英数字	エイスウジ	eisuuji 	Alphanumeric characters
+日付	ヒヅケ	hiduke 	date
+半角カナ	ハンカクカナ	hankaku kana 	Half-width Kana
+外字	ガイジ	gaiji 	External character
+その他	ソノタ	sonota 	Other
+固定長	コテイチョウ	kotei chou 	Fixed length
+最大長	サイダイチョウ	saidai chou 	Maximum length
+範囲	ハンイ	hani 	range
+最小値	サイショウチ	saishou chi 	minimum value
+最大値	サイダイチ	saidai chi 	Maximum value
+名称	メイショウ	meishou 	Name
+一時保存	イチジホゾン	ichiji hozon 	Temporarily saved
+内訳追加	ウチワケツイカ	uchiwake tsuika 	Additional breakdown
+必須	ヒッス	hissu 	Required
