@@ -37,6 +37,14 @@ Whoa:
    GetClipBoardText = ""
 End Function
 
+Function KatakanaToHiragana(strKata As String) As String
+    KatakanaToHiragana = StrConv(strKata, vbHiragana)
+End Function
+
+Function HiraganaToKatakana(strHira As String) As String
+    HiraganaToKatakana = StrConv(strHira, vbKatakana)
+End Function
+
 Sub auto_open()
     Application.OnKey "^%{PGUP}", "MoveToFirstSheet"
     Application.OnKey "^%{PGDN}", "MoveToLastSheet"
