@@ -45,6 +45,21 @@ Function HiraganaToKatakana(strHira As String) As String
     HiraganaToKatakana = StrConv(strHira, vbKatakana)
 End Function
 
+Function getParentImageName(ByRef dic As Dictionary, ByVal shape As Object) As String
+Dim topMid
+Dim leftMid
+topMid = shape.Top + shape.Height / 2
+leftMid = shape.Left + shape.Width / 2
+For Each keyImg In dic.keys
+    If ((dic.Item(keyImg).Top <= topMid) And (topMid <= (dic.Item(keyImg).Top + dic.Item(keyImg).Height)) And (dic.Item(keyImg).Left <= leftMid) And (leftMid < (dic.Item(keyImg).Left + dic.Item(keyImg).Width))) Then
+    getParentImageName = keyImg
+    GoTo Out:
+    End If
+Next
+    getParentImageName = ""
+Out:
+End Function
+
 Sub auto_open()
     Application.OnKey "^%{PGUP}", "MoveToFirstSheet"
     Application.OnKey "^%{PGDN}", "MoveToLastSheet"
