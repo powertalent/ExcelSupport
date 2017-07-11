@@ -60,6 +60,15 @@ Next
 Out:
 End Function
 
+Public Sub ShowMsg(ByVal msg As String)
+    Application.StatusBar = msg
+    Application.OnTime Now + TimeValue("00:00:05"), "ClearMsg"
+End Sub
+
+Public Sub ClearMsg()
+    Application.StatusBar = ""
+End Sub
+
 Sub auto_open()
     Application.OnKey "^%{PGUP}", "MoveToFirstSheet"
     Application.OnKey "^%{PGDN}", "MoveToLastSheet"
