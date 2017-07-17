@@ -106,6 +106,99 @@ Function TranslateLongString(str As String) As String
     
 End Function
 
+Sub ShapeTest()
+    'text box and owl logo, plus connector
+'    Dim rect As shape
+'    Dim Logo As shape
+'    Dim conn As shape
+'    'set reference to a worksheet
+'    Set w = ActiveSheet
+'    'add the text box
+'    Set rect = w.Shapes.AddShape(1, 10, 10, 80, 20)
+'    rect.TextFrame.Characters.Text = "Curve"
+'    rect.Fill.ForeColor.RGB = RGB(227, 214, 213)
+'    rect.TextFrame.Characters.Font.ColorIndex = 1
+'    Set Logo = w.Shapes.AddShape(1, 30, 80, 50, 50)
+'    Set conn = w.Shapes.AddConnector(msoConnectorCurve, 1, 1, 1, 1)
+'    conn.ConnectorFormat.BeginConnect rect, 1
+'    conn.ConnectorFormat.EndConnect Logo, 1
+
+    Dim ActiveShape As shape
+    Dim UserSelection As Variant
+    
+    'Pull-in what is selected on screen
+      Set UserSelection = ActiveWindow.Selection
+    
+    'Determine if selection is a shape
+      On Error GoTo NoShapeSelected
+        Set ActiveShape = ActiveSheet.Shapes(UserSelection.Name)
+                '
+        Set connectedLine = ActiveSheet.Shapes(getBeginConnectedLineName(UserSelection.Name))
+        
+        clLeft = ActiveShape.Left
+        clTop = ActiveShape.Top + 100
+        Set newRect = ActiveSheet.Shapes.AddShape(1, clLeft, clTop, 50, 50)
+        
+        'Set conn = ActiveSheet.Shapes.AddConnector(msoConnectorCurve, 1, 1, 1, 1)
+        'Set conn = ActiveSheet.Shapes.AddConnector(msoConnectorElbow, 1, 1, 1, 1)
+        Set conn = ActiveSheet.Shapes.AddConnector(msoConnectorStraight, 1, 1, 1, 1)
+        'conn.BeginArrowheadStyle = msoArrowheadOpen
+        
+        conn.ConnectorFormat.BeginConnect ActiveShape, 3
+        conn.ConnectorFormat.EndConnect newRect, 1
+        conn.Line.EndArrowheadStyle = msoArrowheadOpen
+        
+'        With Selection.ShapeRange.Line
+'        .BeginArrowheadStyle = msoArrowheadNone
+'        .EndArrowheadStyle = msoArrowheadOpen
+'        End With
+        
+        
+        If (connectedLine.Name <> "") Then
+            connectedLine.ConnectorFormat.BeginConnect newRect, 3
+        End If
+      On Error Resume Next
+    
+    'Do Something with your Shape variable
+      'MsgBox "You have selected the shape: " & ActiveShape.Name
+    
+    Exit Sub
+    
+    'Error Handler
+NoShapeSelected:
+      MsgBox "You do not have a shape selected!"
+End Sub
+
+Function hasConnectedLine(shapeName As String) As Boolean
+    For Each shape In ActiveSheet.Shapes
+        'If shape.Type = msoConnectorStraight Then
+        If (shape.Connector = msoFalse) Then GoTo NextIteration
+        If (shape.ConnectorFormat.BeginConnected = msoFalse) Then GoTo NextIteration
+        If (shape.ConnectorFormat.BeginConnectedShape.Name = shapeName) Then
+            hasConnectedLine = True
+            Exit Function
+        End If
+NextIteration:
+    Next shape
+    
+    hasConnectedLine = False
+End Function
+
+Function getBeginConnectedLineName(shapeName As String) As String
+    For Each shape In ActiveSheet.Shapes
+        'If shape.Type = msoConnectorStraight Then
+        If (shape.Connector = msoFalse) Then GoTo NextIteration
+        If (shape.ConnectorFormat.BeginConnected = msoFalse) Then GoTo NextIteration
+        If (shape.ConnectorFormat.BeginConnectedShape.Name = shapeName) Then
+            getBeginConnectedLineName = shape.Name
+            Exit Function
+        End If
+NextIteration:
+    Next shape
+    
+    getBeginConnectedLineName = ""
+End Function
+
 Sub auto_open()
     Application.OnKey "^%{PGUP}", "MoveToFirstSheet"
     Application.OnKey "^%{PGDN}", "MoveToLastSheet"
