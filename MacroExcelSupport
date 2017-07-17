@@ -69,6 +69,43 @@ Public Sub ClearMsg()
     Application.StatusBar = ""
 End Sub
 
+Function TranslateLongString(str As String) As String
+    strLen = Len(str)
+    
+    ' Exit if Str is Empty
+    If (strLen = 0) Then
+        Exit Function
+    End If
+    i = strLen
+    
+    ' Define Max Word Length in Dictionary : 10
+    If (i > 10) Then
+        i = 10
+    End If
+        
+    ' Find Word Meaning
+    Do While i >= 1
+        ThisWorkbook.Sheets(1).Range("A1").Value = Left(str, i)
+        Meaning = ThisWorkbook.Sheets(1).Range("B1").Value
+        If (Meaning <> "NOT FOUND") Then
+            Exit Do
+        End If
+        i = i - 1
+    Loop
+    
+    ' If Not Found In Dictionary Return Original Value
+    If (i = 0) Then
+        i = 1
+        Meaning = ThisWorkbook.Sheets(1).Range("A1").Value
+        TranslateLongString = Meaning & "" & TranslateLongString(Right(str, strLen - i))
+        Exit Function
+    End If
+    
+    ' Return Meaning and Continue Translate
+    TranslateLongString = "_" & Meaning & "_" & TranslateLongString(Right(str, strLen - i))
+    
+End Function
+
 Sub auto_open()
     Application.OnKey "^%{PGUP}", "MoveToFirstSheet"
     Application.OnKey "^%{PGDN}", "MoveToLastSheet"
