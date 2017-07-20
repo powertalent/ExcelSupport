@@ -1,0 +1,159 @@
+#IfWinActive, ahk_exe EXCEL.EXE
+
+f3::
+	Xl := ComObjActive("Excel.Application")
+	oWorkbook := Xl.Workbooks("Book2")
+	oActiveSheet := oWorkbook.ActiveSheet
+	oWorkbook.Activate
+	;oActiveCell := Xl.ActiveCell
+	;ActiveCellAddress := oActiveCell.Address(RowAbsolute := false, ColumnAbsolute := false)
+	;MsgBox % oActiveCell.Address(RowAbsolute := false, ColumnAbsolute := false)
+	TotalShapes := oActiveSheet.Shapes.Count
+	If (TotalShapes != 0)
+	{
+		LastRow := oActiveSheet.Shapes(TotalShapes).BottomRightCell.Row
+	} 
+	else 
+	{
+		LastRow := 0
+	}
+	;MsgBox % LastRow
+	NextCellAdress := "B" . (LastRow + 3)
+	
+	oActiveSheet.Range(NextCellAdress).PasteSpecial
+	TotalShapes := oActiveSheet.Shapes.Count
+	
+	;MsgBox % TotalShapes
+	
+	;MsgBox % NextCellAdress
+	;NextCellAdress := oActiveCell.Offset(20,0).Address(RowAbsolute := false, ColumnAbsolute := false)
+	;oActiveSheet.Range(NextCellAdress).Activate	
+return
+
+; Ctrl + Alt + PageUp : Go to first Sheet
+^!PgUp::
+	oExcel := ComObjActive("Excel.Application")
+	oWorkbook := oExcel.ActiveWorkbook
+	oWorkbook.Sheets(1).Select
+return
+
+; Ctrl + Alt + PageDown : Go to last Sheet
+^!PgDn::
+	oExcel := ComObjActive("Excel.Application")
+	oWorkbook := oExcel.ActiveWorkbook
+	oWorkbook.Sheets(oWorkbook.Sheets.Count).Select
+return
+
+; F3 : Edit Formulation PCL
+#F3::
+	oExcel := ComObjActive("Excel.Application")
+	oWorkbook := oExcel.activeWorkbook
+	oActiveSheet := oWorkbook.activeSheet
+	oActiveCell := oExcel.ActiveCell
+	currentRow := oActiveCell.Row
+	
+	SheetName := oActiveCell.Value
+	If (SheetName = "")
+	{
+		Exit
+	}	
+	; Value to find Last Row
+	ValueToFind := "完了日"
+	;oWorkbook.Worksheets("Sheet2").Activate
+	; Find Last Row
+	A0 := oWorkbook.Worksheets(SheetName).Range("A:E").Find(ValueToFind).Row + 1
+	If (A0 = "")
+	{
+		Exit
+	}
+	; Get Current Active Cell Address
+	oActiveCellAddress := oActiveCell.Address(RowAbsolute:=False)	
+	A1 := A0 - 3
+	A2 := A0 - 1
+	A3 := A0 - 8
+	A4 := A0 - 7	
+	;MsgBox % A1
+	;項目数
+	oActiveCell.Offset(0, 1).Formula := "=IF(" . oActiveCellAddress . "<>"""",SUM(INDIRECT(""'""&" . oActiveCellAddress . "&""'!$Q$" . A1 . """)),"""")"
+	;正常
+	oActiveCell.Offset(0, 2).Formula := "=IF(" . oActiveCellAddress . "<>"""",SUM(INDIRECT(""'""&" . oActiveCellAddress . "&""'!$Y$" . A0 . """)),"""")"
+	;異常
+	oActiveCell.Offset(0, 3).Formula := "=IF(" . oActiveCellAddress . "<>"""",SUM(INDIRECT(""'""&" . oActiveCellAddress . "&""'!$AB$" . A0 . """)),"""")"
+	;限界・境界
+	oActiveCell.Offset(0, 4).Formula := "=IF(" . oActiveCellAddress . "<>"""",SUM(INDIRECT(""'""&" . oActiveCellAddress . "&""'!$AE$" . A0 . """)),"""")"
+	;ｲﾝﾀｰﾌｪｲｽ
+	oActiveCell.Offset(0, 5).Formula := "=IF(" . oActiveCellAddress . "<>"""",SUM(INDIRECT(""'""&" . oActiveCellAddress . "&""'!$AH$" . A0 . """)),"""")"
+	;内ﾉﾝﾃﾞｸﾞﾚ
+	oActiveCell.Offset(0, 6).Formula := "=IF(" . oActiveCellAddress . "<>"""",SUM(INDIRECT(""'""&" . oActiveCellAddress . "&""'!$AK$" . A0 . """)),"""")"
+	;項目消化数
+	oActiveCell.Offset(0, 7).Formula := "=IF(" . oActiveCellAddress . "<>"""",SUM(INDIRECT(""'""&" . oActiveCellAddress . "&""'!$Q$" . A2 . """)),"""")"
+	;完了日
+	oActiveCell.Offset(0, 8).Formula := "=IF(" . oActiveCellAddress . "<>"""",IF(COUNTA(INDIRECT(""'""&" . oActiveCellAddress . "&""'!$V$" . A3 . ":$AS$" . A3 . """))=(24-COUNTIF(INDIRECT(""'""&" . oActiveCellAddress . "&""'!$V$" . A4 . ":$AS$" . A4 . """),"""")),MAX(INDIRECT(""'""&" . oActiveCellAddress . "&""'!$V$" . A3 . ":$AS$" . A3 . """)),""""),"""")"
+	;項目消化数(日別)
+	oActiveCell.Offset(0, 9).Formula := "=IF(" . oActiveCellAddress . "<>"""",COUNTIF(INDIRECT(""'""&" . oActiveCellAddress . "&""'!$V$" . A3 . ":$AS$" . A3 . """),K$17),"""")"	
+	oRange := "K" . currentRow . ":AO" . currentRow . ""	
+	oActiveSheet.Range(oRange).Formula := oActiveCell.Offset(0, 9).Formula
+	;oActiveCell.Offset(0, 9).Copy
+	;oActiveSheet.Range(oRange).PasteSpecial Paste:=xlPasteFormulas, Operation:=xlNone 
+	;.PasteSpecial (xlPasteAll)
+	;MsgBox % oRange
+	;oWorkbook.Range("K19:T19").FormulaR1C1 = "=IF(R[-2]C[0],0,1)"
+	;oActiveCell.Offset(0, 9).Formula := "=IF(" . oActiveCellAddress . "<>"""",COUNTIF(INDIRECT(""'""&" . oActiveCellAddress . "&""'!$V$" . A3 . ":$AS$" . A3 . """),K$17),"""")"	
+	;oFind1 := oWorkbook.Worksheets("Sheet2").Range("A:E").Find("Last Cell")
+	;oCellAddress := oActiveCell.Offset(0, -1).Address(RowAbsolute:=False)
+	;oFormula := "=IF(" + oCellAddress + "<>"""",SUM(INDIRECT(""'""&" + %oCellAddress% + "&""'!$AH$100"")),"""")"
+	;MsgBox % oFormula
+	;MsgBox ,=IF(%oCellAddress%<>"",SUM(INDIRECT("'"&$B18&"'!$Q$97")),"")
+    ;oActiveCell.Formula := "=IF(%oCellAddress%<>"",SUM(INDIRECT("'"&$B18&"'!$Q$97")),"")
+	; Draw rectangle
+	;oExcel.ActiveSheet.Shapes.AddShape(1, 115.5, 133.5, 209.25, 32.25)
+return
+#f4::
+	oExcel := ComObjActive("Excel.Application")
+	oWorkbook := oExcel.activeWorkbook	
+	oActiveCell	:= oExcel.ActiveCell
+	If (oActiveCell.Value = "")
+	{
+		Exit
+	}
+	For sheet in oExcel.ActiveWorkbook.Worksheets
+	{	
+		if (sheet.Name = oActiveCell.Value){
+			sheet.Select
+			Exit
+		}
+	}
+	oActiveSheet = oWorkbook.activeSheet
+	InputBox, UserInput, Excel Support, Enter the sheet name to search for:, , 270, 140
+	iCurrentSheetIndex := % oExcel.ActiveSheet.Index
+	blFound := false
+	For sheet in oExcel.ActiveWorkbook.Worksheets
+	{	
+		sheetIndex := % sheet.Index
+		if sheetIndex = iCurrentSheetIndex
+			continue
+		 	
+		currentSheetName :=  % sheet.Name	
+		IfInString, currentSheetName, %UserInput%
+		{     
+			 sheet.Select
+			 blFound := true
+			 break
+		}				
+	}
+	if !blFound
+		MsgBox,,Excel Support, That sheet name does not exist!
+return
+
+; Middle Mouse Click : Draw a rectagle
+MButton::
+	BlockInput, On
+	Send {LButton UP}
+	Send !4
+	Send {DOWN 3}
+	Send {ENTER}
+	;MouseClickDrag, Left, 0, 0, 500, 50, , R
+	Click down
+	BlockInput, Off
+return
+#IfWinActive
